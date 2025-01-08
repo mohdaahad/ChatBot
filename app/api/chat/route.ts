@@ -1,14 +1,21 @@
-import { openai } from "@ai-sdk/openai";
+import { azure } from "@ai-sdk/azure";
 import { getEdgeRuntimeResponse } from "@assistant-ui/react/edge";
 
-export const maxDuration = 30;
 
 export const POST = async (request: Request) => {
   const requestData = await request.json();
+  const systemMessage = {
+    role: "system",
+    content: [{
+      type: 'text',
+      text:  process.env.AI_SYSTEM_MESSAGE
+    }]
+  };
+  requestData.messages.unshift(systemMessage);
 
   return getEdgeRuntimeResponse({
     options: {
-      model: openai("gpt-4o"),
+      model: azure("gpt-4o"),
     },
     requestData,
     abortSignal: request.signal,
